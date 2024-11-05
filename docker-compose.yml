@@ -1,0 +1,23 @@
+version: "3"
+services:
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
+    ports:
+      - "4442:4442" # Event Bus порт
+      - "4443:4443" # Event Bus порт
+      - "4444:4444" # Web порт для доступа к Grid UI
+    environment:
+      - GRID_MAX_SESSION=5 # Опционально
+
+  chrome:
+    image: selenium/node-chrome:latest
+    container_name: chrome
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    volumes:
+      - /dev/shm:/dev/shm
